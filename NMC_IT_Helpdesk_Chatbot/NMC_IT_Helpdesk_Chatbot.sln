@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.168
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NMC_IT_Helpdesk_Chatbot", "NMC_IT_Helpdesk_Chatbot\NMC_IT_Helpdesk_Chatbot.csproj", "{99FB4A84-8AFC-4D45-8F9A-B54F5CDC29ED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99FB4A84-8AFC-4D45-8F9A-B54F5CDC29ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99FB4A84-8AFC-4D45-8F9A-B54F5CDC29ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99FB4A84-8AFC-4D45-8F9A-B54F5CDC29ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99FB4A84-8AFC-4D45-8F9A-B54F5CDC29ED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8094AD25-53D2-4596-A83B-B6AF602A085F}
+	EndGlobalSection
+EndGlobal
