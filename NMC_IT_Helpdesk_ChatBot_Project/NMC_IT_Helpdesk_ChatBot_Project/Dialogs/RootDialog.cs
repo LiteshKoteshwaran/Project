@@ -11,10 +11,12 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
     public class RootDialog : IDialog<object>
     {
         public static string Name, Email;
-        List<string> list;
-        static string UserResponse, BotResponse,message; 
+        public static string BotResponse,message;
+        
+
         public async Task StartAsync(IDialogContext context)
         {
+
             // Checking if the user has given his name before 
             if (context.UserData.TryGetValue(StateKeys.UserName, out Name))
             {
@@ -36,6 +38,7 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
             //Capturing the given Email address by the user
             var activity = await result as Activity;
             context.Wait(CheckForUserExistance);
+
         }
 
         private async Task CheckForUserExistance(IDialogContext context, IAwaitable<object> result)
@@ -67,7 +70,7 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
             }
             else
             {
-                BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, "WorngEmail");
+                BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, "IncorrectEmail");
 
                 await context.PostAsync(BotResponse);
 

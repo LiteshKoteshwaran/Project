@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
+using NMC_IT_Helpdesk_ChatBot_Project.Dialogs;
 
 namespace NMC_IT_Helpdesk_ChatBot_Project
 {
@@ -21,6 +22,7 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
             {
                 if (activity.GetActivityType() == ActivityTypes.Message)
                 {
+                    //RootDialog.message = activity.Text;
                     await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
                 }
                 else

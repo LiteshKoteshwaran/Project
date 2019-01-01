@@ -22,10 +22,12 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
             PromptDialog.Choice(context, CaptureChangeRequest, List, "Which change are you requesting?", "Please select from given Options");
         }
 
-        private async Task CaptureChangeRequest(IDialogContext context, IAwaitable<object> result)
+        private async Task CaptureChangeRequest(IDialogContext context, IAwaitable<string> result)
         {
-            var Input = await result as Activity;
-            context.ConversationData.SetValue(StateKeys.ChangeRequest, Input.Text);
+            string Input = await result; ;
+            context.ConversationData.SetValue(StateKeys.ChangeRequest, Input);
+            WiserRootDialog wiserRootDialog = new WiserRootDialog();
+            await wiserRootDialog.AskForPinAndName(context,result);
         }
     }
 }

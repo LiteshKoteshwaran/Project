@@ -23,13 +23,13 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
             EntityType.Clear();
 
             var message = await result as Activity;
-
+            RootDialog.message = message.Text;
             LuisResponse Data = new LuisResponse();
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var responseInString = await client.GetStringAsync(@"https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/54962854-4cee-4c29-a52b-5d82d71f940b?staging=true&verbose=true&timezoneOffset=-360&subscription-key=9a1593730efc486cb5f8e6ca341b5a62&q="
+                    var responseInString = await client.GetStringAsync(@"https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/2d33781b-3316-4448-a01a-d3208f5b7993?staging=true&verbose=true&timezoneOffset=-360&subscription-key=045e34d91e564e549b7df4a50bc57079&q="
                    + System.Uri.EscapeDataString(message.Text));
 
                     Data = Newtonsoft.Json.JsonConvert.DeserializeObject<LuisResponse>(responseInString);

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -10,7 +11,7 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
 {
     public static class SqlOperations
     {
-        public static string Result;
+        public static string Result, UserId;
         public static bool IsSuccess = true;
         public static string GetStaticResponse(string ProcName, string UserInput, string InputPramName, string OutputPramName)
         {
@@ -85,7 +86,7 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
                     param.ParameterName = StateKeys.ParamBotsReply;
                     param.Direction = ParameterDirection.Output;
                     param.SqlDbType = SqlDbType.VarChar;
-                    param.Size = 50;
+                    param.Size = 500;
                     command.Parameters.Add(param);
                     command.ExecuteNonQuery();
                     Result = command.Parameters[StateKeys.ParamBotsReply].Value.ToString();
@@ -110,7 +111,7 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
                     conn.Open();
                     SqlCommand cmd = new SqlCommand();
                     cmd.Connection = conn;
-                    string UserId = GetSelection("select Id from UserInformation where Name = "+"'"+RootDialog.Name+"'");
+                    UserId = GetSelection("select Id from UserInformation where Name = "+"'"+RootDialog.Name+"'");
                     cmd.CommandText = "insert into ConversationLog values('"+UserId+"'"+" ,'"+UserReply + "'" + " ,'" + BotResponse + "'" + " ,'" + Time+"')";
                     int RowsAffected = cmd.ExecuteNonQuery();
                     if (RowsAffected < 1)
@@ -149,5 +150,53 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
             }
             return Selection;
         }
+
+
+        public static void RecordLogInDB(Exception ex)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionManager.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand("RecordError", connection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("UserId", UserId);
+                    cmd.Parameters.AddWithValue("MethodName", ex.TargetSite.ToString());
+                    cmd.Parameters.AddWithValue("StackTrace", ex.StackTrace.ToString());
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    ExceptionLog.LogFile(e);
+                }
+            }
+
+        }
+
     }
+
+        public class ExceptionLog
+        {
+            public static void LogFile(Exception ex)
+            {
+                string strPath = @"D:\Error.txt";  // folder location
+                if (!File.Exists(strPath))
+                {
+                    File.Create(strPath).Dispose();
+                }
+                using (StreamWriter sw = File.AppendText(strPath))
+                {
+                    sw.WriteLine("=============Error Logging ===========");
+                    sw.WriteLine("===========Start============= " + DateTime.Now);
+                    sw.WriteLine("Error Message: " + ex.Message);
+                    sw.WriteLine("Stack Trace: " + ex.StackTrace);
+                    sw.WriteLine("===========End============= " + DateTime.Now);
+                }
+                SqlOperations.RecordLogInDB(ex);
+            }
+        }
+    }
+
 }
