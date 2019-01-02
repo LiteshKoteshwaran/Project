@@ -13,15 +13,10 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
     [Serializable]
     public class Luis
     {
-        public static string intent;
-        public static List<string> Entity = new List<string>();
-        public static List<string> EntityType = new List<string>();
+        public static string intent,entity;
 
         public static async Task IdentifyUserQueryUsingLuis(IDialogContext context, IAwaitable<object> result)
         {
-            Entity.Clear();
-            EntityType.Clear();
-
             var message = await result as Activity;
             RootDialog.message = message.Text;
             LuisResponse Data = new LuisResponse();
@@ -34,12 +29,16 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
 
                     Data = Newtonsoft.Json.JsonConvert.DeserializeObject<LuisResponse>(responseInString);
                     intent = Data.topScoringIntent.intent;
+                    if (Data.entities.Count() > 0)
+                    {
+                        entity = Data.entities[0].entity;
+                    }
                     await IdentifyUserIntent(context,result);
                 }
             }
             catch (Exception ex)
             {
-                throw ex;
+                ExceptionLog.LogFile(ex);
             }
 
         }
@@ -49,14 +48,41 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
             {
                 switch (Luis.intent)
                 {
-                    case ("FootPrintsWiserIssueTicketing"):
+                    case (Intents.FootPrintsWiserIssueTicketing):
                         context.Call(new WiserRootDialog(), ResumeAfterOptionDialog);
+                        break;
+                    case (Intents.EmailAutoReplySetup):
+                    case (Intents.EmailCalendarAccess):
+                    case (Intents.EmailMimecastRelease):
+                    case (Intents.EmailInboxBlockSpam):
+                    case (Intents.EmailOutlookSignatureCreation):
+                    case (Intents.SelfServiceRequestHardwareType):
+                        context.Call(new StaticAndDynamicQnA(), ResumeAfterOptionDialog);
+                        break;
+                    case (Intents.SmallTalkHelpWhatCanYouDo):
+                    case (Intents.SmallTalkGreetingHello):
+                    case (Intents.SmallTalkGreetingHowAreYou):
+                    case (Intents.SmallTalkGreetingPartOfDAy):
+                    case (Intents.SmallTalkGratitudeThankYou):
+                    case (Intents.SmallTalkGratitudeWellDone):
+                    case (Intents.SmallTalkGratitudeBye):
+                    case (Intents.SmallTalkAngryMood):
+                    case (Intents.SmallTalkAngryWrongAnswer):
+                    case (Intents.SmallTalkGreetingHobbies):
+                    case (Intents.SmallTalkGreetingFunny):
+                    case (Intents.SmallTalkGreetingWhereDoUWork):
+                    case (Intents.SmallTalkEasterEggHitchhikers):
+                    case (Intents.SmallTalkEasterEggFootball):
+                    case (Intents.SmallTalkEasterEggRelationship):
+                    case (Intents.SmallTalkEasterEggHAL):
+                    case (Intents.SmallTalkEasterEggAsimov):
+                        context.Call(new SmallTalk(), ResumeAfterOptionDialog);
                         break;
                 }
             }
             catch (Exception e)
             {
-
+                ExceptionLog.LogFile(e);
             }
         }
         private static Task ResumeAfterOptionDialog(IDialogContext context, IAwaitable<object> result)

@@ -154,6 +154,8 @@
     <Compile Include="ConnectionManager.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Dialogs\RootDialog.cs" />
+    <Compile Include="Dialogs\SmallTalk.cs" />
+    <Compile Include="Dialogs\StaticAndDynamicQnA.cs" />
     <Compile Include="Dialogs\WiserChangeDialog.cs" />
     <Compile Include="Dialogs\WiserFaultDialog.cs" />
     <Compile Include="Dialogs\WiserRootDialog.cs" />

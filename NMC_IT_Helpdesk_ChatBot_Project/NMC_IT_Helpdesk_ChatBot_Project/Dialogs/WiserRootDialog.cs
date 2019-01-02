@@ -19,12 +19,11 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
             string Name;
             context.UserData.TryGetValue(StateKeys.UserName,out Name);
 
-            RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, "CheckForWiserLogin");
+            RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", Intents.FootPrintsWiserIssueTicketing, "CheckForWiserLogin");
             message = RootDialog.BotResponse.Replace("Name", Name);
 
             SqlOperations.ForConversationLog(RootDialog.message, message);
 
-            //await context.PostAsync(message);
 
             PromptDialog.Choice(context, MessageReceivedAsync, new List<string>() { "Yes", "No" }, message, " Please select the given option ", 3);
         }
@@ -37,19 +36,17 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
             {
                 
 
-                RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, "AskingForFaultOrChange");
+                RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", Intents.FootPrintsWiserIssueTicketing, "AskingForFaultOrChange");
                 SqlOperations.ForConversationLog(activity, RootDialog.BotResponse);
 
-                //await context.PostAsync("Great, are you reporting a fault or requesting a change? ");
                 PromptDialog.Choice(context, FaultOrChange, new List<string>() { "Fault", "Change" }, RootDialog.BotResponse, " Please select the given option ", 3);
             }
 
             else if (activity == "No")
             {
-                RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, "AskingForProblem");
+                RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", Intents.FootPrintsWiserIssueTicketing, "AskingForProblem");
                 SqlOperations.ForConversationLog(activity, RootDialog.BotResponse);
 
-                //await context.PostAsync("No problem, we will start a investigation on this issue.\nBreifly describe the problem you are facing.");
                 await context.PostAsync(RootDialog.BotResponse);
                 context.Wait(Proceed);
             }
@@ -78,16 +75,15 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
             {
                 if (UserRequest == "Fault")
                 {
-                    RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, "FaultQuestion1");
+                    RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", Intents.FootPrintsWiserIssueTicketing, "FaultQuestion1");
                     SqlOperations.ForConversationLog(UserRequest, RootDialog.BotResponse);
                 }
                 else
                 {
                     context.ConversationData.TryGetValue(StateKeys.ChangeRequest, out message);
-                    RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, "FaultQuestion1");
+                    RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", Intents.FootPrintsWiserIssueTicketing, "FaultQuestion1");
                     SqlOperations.ForConversationLog(message, RootDialog.BotResponse);
                 }
-                //await context.PostAsync("PRN/Pin & Registrant full name");
                 await context.PostAsync(RootDialog.BotResponse);
                 context.Wait(CapturePinAndRegistrant);
             }
@@ -97,7 +93,6 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
             var Input = await result as Activity;
             context.ConversationData.SetValue(StateKeys.PinAndName, Input.Text);
 
-            //SqlOperations.ForConversationLog(Input.Text, RootDialog.BotResponse);
 
             if (UserRequest == "Fault")
             {
@@ -126,7 +121,7 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
             if (UserRequest == "Change")
             {
                 context.ConversationData.TryGetValue(StateKeys.PinAndName, out string message);
-                RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, "AskingToProceed");
+                RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", Intents.FootPrintsWiserIssueTicketing, "AskingToProceed");
                 SqlOperations.ForConversationLog(message, RootDialog.BotResponse);
             }
             PromptDialog.Choice(context, EndOfFlow, new List<string>() { "Yes", "No" }, RootDialog.BotResponse, "Please select from given Options");
@@ -138,7 +133,6 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
 
             if (UserInput == "Yes")
             {
-                //SqlOperations.ForConversationLog(UserInput, RootDialog.BotResponse);
                 await WiserChangeForm(context);
             }
             if (UserInput == "No")
@@ -153,23 +147,23 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
         {
             context.ConversationData.TryGetValue(StateKeys.AdditionalInfo, out string message);
 
-            RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, "EndForFault");
+            RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", Intents.FootPrintsWiserIssueTicketing, "EndForFault");
 
             SqlOperations.ForConversationLog(message, RootDialog.BotResponse);
-            //await context.PostAsync("I have logged a ticket on this with the relevant support team and they will be in touch to resolve this issue\n Your reference ticket number is sent to your email.\n if possible please share a screenshot of the error message, you can dp that by replying with the screenshot as a attachment.\n you can ask me other IT related question, i will be happy to assist.");
             await context.PostAsync(RootDialog.BotResponse);
+            //context.EndConversation("Conversation Ended");
             await rootDialog.StartAsync(context);
         }
 
         private async Task WiserChangeForm(IDialogContext context)
         {
 
-            RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, "EndOfWiser");
+            RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", Intents.FootPrintsWiserIssueTicketing, "EndOfWiser");
 
             SqlOperations.ForConversationLog(UserInput, RootDialog.BotResponse);
 
             await context.PostAsync(RootDialog.BotResponse);
-            //await context.PostAsync("You will have to formally complete a Wiser change form and get it signed by Geri and <@AD Line Manager>.\nHere is the Wiser change form <insert link>.\nAfter completion please submit it via ITSelf.");
+            //context.EndConversation("Conversation Ended");
             await rootDialog.StartAsync(context);
         }
     }

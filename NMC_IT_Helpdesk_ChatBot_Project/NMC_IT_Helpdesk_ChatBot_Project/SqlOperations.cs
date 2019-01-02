@@ -11,7 +11,7 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
 {
     public static class SqlOperations
     {
-        public static string Result, UserId;
+        public static string Result, UserId, Query;
         public static bool IsSuccess = true;
         public static string GetStaticResponse(string ProcName, string UserInput, string InputPramName, string OutputPramName)
         {
@@ -38,6 +38,7 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
             }
             catch (Exception e)
             {
+                ExceptionLog.LogFile(e);
                 IsSuccess = false;
             }
             return Result;
@@ -64,7 +65,7 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
                 }
                 catch (Exception e)
                 {
-
+                    ExceptionLog.LogFile(e);
                 }
                 return Items;
             }
@@ -95,6 +96,7 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
             }
             catch (Exception e)
             {
+                ExceptionLog.LogFile(e);
                 IsSuccess = false;
             }
             return Result;
@@ -123,6 +125,7 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
                 catch (Exception ex)
                 {
                     isSuccess = false;
+                    ExceptionLog.LogFile(ex);
                 }
                 finally
                 {
@@ -145,21 +148,48 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
                 }
                 catch (Exception ex)
                 {
-                    throw ex;
+                    ExceptionLog.LogFile(ex);
                 }
             }
             return Selection;
         }
 
 
-        public static void RecordLogInDB(Exception ex)
+        internal static string ForBotReply(string intent)
+        {
+            try
+            {
+               Query = "select Answer from QnA join Intent on Intent.Id = QnA.IntentId where Intent.Name='" + intent + "'";
+            }
+            catch(Exception ex)
+            {
+                ExceptionLog.LogFile(ex);
+            }
+            return Result = GetSelection(Query);
+        }
+
+        internal static string ForBotReplywithEntity(string intent, string entity)
+        {
+            try
+            {
+               Query = "select Answer from QnA join Intent on Intent.Id = QnA.IntentId join Entity on Entity.Id = QnA.EntityId where (Intent.Name='" + intent + "' and Entity.Name='" + entity + "')";
+            }
+            catch(Exception ex)
+            {
+                ExceptionLog.LogFile(ex);
+            }
+            return Result = GetSelection(Query);
+        }
+
+
+        public static void ForErrorLog(Exception ex)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionManager.ConnectionString))
             {
                 try
                 {
                     connection.Open();
-                    SqlCommand cmd = new SqlCommand("RecordError", connection);
+                    SqlCommand cmd = new SqlCommand("ForErrorLog", connection);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("UserId", UserId);
                     cmd.Parameters.AddWithValue("MethodName", ex.TargetSite.ToString());
@@ -181,7 +211,7 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
         {
             public static void LogFile(Exception ex)
             {
-                string strPath = @"D:\Error.txt";  // folder location
+                string strPath = @"D:\FinalProject\NMC_IT_Helpdesk_ChatBot_Project\ErrorLog.txt";
                 if (!File.Exists(strPath))
                 {
                     File.Create(strPath).Dispose();
@@ -194,9 +224,8 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
                     sw.WriteLine("Stack Trace: " + ex.StackTrace);
                     sw.WriteLine("===========End============= " + DateTime.Now);
                 }
-                SqlOperations.RecordLogInDB(ex);
+                SqlOperations.ForErrorLog(ex);
             }
         }
     }
 
-}

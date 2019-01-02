@@ -26,7 +26,7 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
             else
             {
                 //If Its First Time 
-                BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, "AskForEmail");
+                BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", Intents.FootPrintsWiserIssueTicketing, "AskForEmail");
 
                 await context.PostAsync(BotResponse);
                 context.Wait(MessageReceivedAsync);
@@ -58,7 +58,7 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
                 context.UserData.SetValue(StateKeys.UserEmail, Email);
                 context.UserData.SetValue(StateKeys.UserName, Name);
 
-                BotResponse =  SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, MessageType.WiserWelcome);
+                BotResponse =  SqlOperations.GetResponseFromBot("ToFetchBotsReply", Intents.FootPrintsWiserIssueTicketing, MessageType.WiserWelcome);
 
                     message = BotResponse.Replace("Name",Name);
 
@@ -70,7 +70,7 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
             }
             else
             {
-                BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, "IncorrectEmail");
+                BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", Intents.FootPrintsWiserIssueTicketing, "IncorrectEmail");
 
                 await context.PostAsync(BotResponse);
 

@@ -17,10 +17,9 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
         {
             context.ConversationData.TryGetValue(StateKeys.PinAndName,out string message);
 
-            RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, "FaultQuestion2");
+            RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", Intents.FootPrintsWiserIssueTicketing, "FaultQuestion2");
             SqlOperations.ForConversationLog(message, RootDialog.BotResponse);
 
-            //await context.PostAsync("What task were you attempting when this issue occurred");
             await context.PostAsync(RootDialog.BotResponse);
             context.Wait(Fault);
         }
@@ -30,21 +29,20 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
             var Input = await result as Activity;
             if (!context.ConversationData.TryGetValue(StateKeys.TaskAttemptedDuringIssue, out TaskAttemptedDuringIssue))
             {
-                RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, "FaultQuestion3");
+                RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", Intents.FootPrintsWiserIssueTicketing, "FaultQuestion3");
                 SqlOperations.ForConversationLog(Input.Text, RootDialog.BotResponse);
 
                 context.ConversationData.SetValue(StateKeys.TaskAttemptedDuringIssue, Input.Text);
-                //await context.PostAsync("Any error messages displayed");
+
                 await context.PostAsync(RootDialog.BotResponse);
                 context.Wait(Fault);
             }
             else if (!context.ConversationData.TryGetValue(StateKeys.DisplayedErrorMessage, out DisplayedErrorMessage))
             {
-                RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, "FaultQuestion4");
+                RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", Intents.FootPrintsWiserIssueTicketing, "FaultQuestion4");
                 SqlOperations.ForConversationLog(Input.Text, RootDialog.BotResponse);
 
                 context.ConversationData.SetValue(StateKeys.DisplayedErrorMessage, Input.Text);
-                //await context.PostAsync("Number of users impacted");
 
                 await context.PostAsync(RootDialog.BotResponse);
 
@@ -53,11 +51,10 @@ namespace NMC_IT_Helpdesk_ChatBot_Project.Dialogs
 
             else if (!context.ConversationData.TryGetValue(StateKeys.NosUsersImpacted, out NosUsersImpacted))
             {
-                RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", StateKeys.FootPrintsWiserIssueTicketing, "FaultQuestion5");
+                RootDialog.BotResponse = SqlOperations.GetResponseFromBot("ToFetchBotsReply", Intents.FootPrintsWiserIssueTicketing, "FaultQuestion5");
                 SqlOperations.ForConversationLog(Input.Text, RootDialog.BotResponse);
 
                 context.ConversationData.SetValue(StateKeys.NosUsersImpacted, Input.Text);
-                //await context.PostAsync("Any additional information you feel would be useful");
 
                 await context.PostAsync(RootDialog.BotResponse);
 

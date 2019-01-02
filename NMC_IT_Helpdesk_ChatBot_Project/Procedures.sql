@@ -12,9 +12,52 @@ select QnA.Answer from QnA where QnA.Type = 'OptionForChange'
 end
 
 
-
-create Procedure ToFetchBotsReply(@IntentName varChar(50), @Type varchar(50), @UserReply varchar(50), @BotsReply varchar(50) output)
+alter Procedure ToFetchBotsReply(@IntentName varChar(50), @Type varchar(50), @BotsReply varchar(1024) output)
 as
 begin
-select @BotsReply = QnA.Answer from QnA join Intent on Intent.Id = QnA.IntentId where (QnA.Type = @Type or QnA.Question = @UserReply or Intent.Name=@IntentName)
+select @BotsReply = QnA.Answer from QnA join Intent on Intent.Id = QnA.IntentId where ( QnA.Type = @Type  )
 end 
+
+
+
+declare @BotsReply varchar(1024)
+exec ToFetchBotsReply 'FootPrintsWiserIssueTicketing', 'EndOfWiser', @BotsReply output
+select @BotsReply
+select Answer from QnA where QnA.Type='EndOfWiser' 
+
+
+create Procedure ForConversationLog(@UserId int, @UserReply varchar(50), @BotResponse varchar(50), @Time datetime)
+as
+begin 
+insert into ConversationLog values(@UserId , @UserReply , @BotResponse , @Time)
+end
+
+
+select Id from UserInformation where Name = 'Litesh'
+
+
+delete from ConversationLog
+
+
+
+create procedure ForErrorLog (
+@UserId int,
+@MethodName varchar(50),
+@StackTrace varchar(MAX)
+)
+as
+begin
+insert into ErrorLog values (@userId, @MethodName, SYSDATETIME(), @StackTrace)
+end
+
+create Procedure OptionsForThingsDoneByBot
+as 
+begin
+select Answer from QnA where Type = 'thingsdonebybot'
+end
+
+select Answer from QnA join Intent on Intent.Id = QnA.IntentId where Intent.Name='SmallTalkGreetingHello'
+
+
+
+select Answer from QnA join Intent on Intent.Id = QnA.IntentId join Entity on Entity.Id = QnA.EntityId where (Intent.Name= 'SelfServiceRequestHardwareType' and Entity.Name='ipad');

@@ -29,13 +29,13 @@ namespace NMC_IT_Helpdesk_ChatBot_Project
                 {
                     HandleSystemMessage(activity);
                 }
-                var response = Request.CreateResponse(HttpStatusCode.OK);
-                return response;
             }
             catch(Exception e)
             {
-                throw e;
+                ExceptionLog.LogFile(e);
             }
+            var response = Request.CreateResponse(HttpStatusCode.OK);
+            return response;
         }
 
         private Activity HandleSystemMessage(Activity message)
